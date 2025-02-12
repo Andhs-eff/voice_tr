@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Recognition, Translation and Synthesis</title>
+	<script src="progressbar.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <div id="progress"></div>
+        <img src="progress.gif" id="processing">
+        <div id="result"></div>
+        <div class="dropdown-row">
+            <div class="dropdown">
+                <label for="dropdown1">Язык перевода:</label>
+                <select id="dropdown1">
+                    <option value="ru-RU">Русский</option>
+                    <option value="en-US" selected>Английский</option>
+                    <option value="cmn-Hans-CN">Китайский</option>
+                </select>
+            </div>
+
+            <div class="dropdown">
+                <label for="dropdown2">Исходный язык:</label>
+                <select id="dropdown2">
+                    <option value="ru-RU" selected>Русский</option>
+                    <option value="en-US">Английский</option>
+                    <option value="cmn-Hans-CN">Китайский</option>
+                </select>
+            </div>
+        </div>
+        <label for="glossary">Глоссарий:</label>
+        <textarea id="glossary" name="glossary" rows="4" cols="50" placeholder="Введите ваши термины..."></textarea>
+		<main>
+            <button id="startButton">Старт</button>		  
+		</main>
+		<script type="module" src="./index.js"></script>
+    </div>
+
+</body>
+</html>
