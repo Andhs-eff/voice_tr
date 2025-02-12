@@ -240,7 +240,7 @@ Avoid usage of unpronounceable punctuation.`
         speakText(result);
     };
 
-    recognition.onspeechend = () => {
+    recognition.onaudioend = () => {
         recognition.stop();
         console.log('Speech recognition stopped');
         originalOnClick = startButton.onclick;
