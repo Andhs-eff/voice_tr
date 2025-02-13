@@ -199,8 +199,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     recognition.onresult = async (event) => {
         const speechResult = event.results[0][0].transcript;
         console.log(speechResult);
-        resultParagraph.textContent = result;
         resultParagraph.style.fontStyle = "italic";
+        resultParagraph.textContent = speechResult;
         // Define the prompt and list of messages
         if (formValues.glossary != "") {
             prompt = `You are a translation machine. Your interface with users will be voice. 
