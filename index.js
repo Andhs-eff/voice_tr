@@ -176,6 +176,8 @@ translatorWorker.onmessage = function (event) {
         return;
     }
     // Update UI with the result from the worker
+    processingImage.style.display = "none";
+    resultParagraph.style.display = "block";
     resultParagraph.style.fontStyle = "normal";
     resultParagraph.textContent = result;
     speakText(result);
@@ -202,6 +204,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     recognition.onresult = async (event) => {
         const speechResult = event.results[0][0].transcript;
         console.log(speechResult);
+        processingImage.style.display = "none";
+        resultParagraph.style.display = "block";
         resultParagraph.style.fontStyle = "italic";
         resultParagraph.textContent = speechResult;
 
