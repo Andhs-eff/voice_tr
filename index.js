@@ -1,33 +1,3 @@
-const myProgress = new ProgressBar.Circle('#progress', {
-    color: "palegreen",
-    strokeWidth: 10.0,
-    trailColor: 'transparent',
-    text: {
-        style: {
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            padding: 0,
-            margin: 0,
-            fontSize: '30px',
-            fontWeight: 'bold',
-            transform: {
-                prefix: true,
-                value: 'translate(-50%, -50%)'
-            }
-        }
-    },
-});
-
-myProgress.animate(0.1);
-myProgress.setText("10%");
-
-import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
-
-myProgress.animate(0.7);
-myProgress.setText("70%");
-
-
 class AudioVisualizer {
     constructor(audioContext, processFrame, processError) {
         this.audioContext = audioContext;
@@ -66,6 +36,30 @@ class AudioVisualizer {
     }
 }
 
+const myProgress = new ProgressBar.Circle('#progress', {
+    color: "palegreen",
+    strokeWidth: 10.0,
+    trailColor: 'transparent',
+    text: {
+        style: {
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            padding: 0,
+            margin: 0,
+            fontSize: '30px',
+            fontWeight: 'bold',
+            transform: {
+                prefix: true,
+                value: 'translate(-50%, -50%)'
+            }
+        }
+    },
+});
+
+myProgress.animate(0.1);
+myProgress.setText("10%");
+
 const visualMainElement = document.querySelector('main');
 const visualValueCount = 16;
 let visualElements;
@@ -79,22 +73,8 @@ const createDOMElements = () => {
     visualElements = document.querySelectorAll('main div');
 };
 
-createDOMElements();
-
 const destroyDOMElements = () => {
     visualMainElement.innerHTML = ''; // Clear the existing elements
-};
-
-const restoreButton = () => {
-    destroyDOMElements();
-    const button = document.createElement('button');
-    button.onclick = originalOnClick;
-    button.innerText = 'Старт';
-    // button.id = "startButton"
-    visualMainElement.appendChild(button);
-    // startButton = document.getElementById('startButton');
-    // console.log(startButton);
-    restoreDOMElements();
 };
 
 const restoreDOMElements = () => {
@@ -103,6 +83,15 @@ const restoreDOMElements = () => {
         const elm = document.createElement('div');
         visualMainElement.appendChild(elm);
     }
+};
+
+const restoreButton = () => {
+    destroyDOMElements();
+    const button = document.createElement('button');
+    button.onclick = originalOnClick;
+    button.innerText = 'Старт';
+    visualMainElement.appendChild(button);
+    restoreDOMElements();
 };
 
 const init = () => {
@@ -138,17 +127,6 @@ const init = () => {
 const startButton = document.getElementById('startButton');
 const processingImage = document.getElementById('processing');
 const resultParagraph = document.getElementById('result');
-const generator = await pipeline('text-generation', 'onnx-community/Qwen2.5-0.5B-Instruct-ONNX-MHA', { dtype: 'int8' });
-
-myProgress.animate(1.0);
-myProgress.setText("100%");
-
-myProgress.destroy();
-document.getElementById("progress").remove();
-
-resultParagraph.style.display = "block";
-
-let originalOnClick = startButton.onclick;
 
 // Get references to the dropdown and textarea elements
 const dropdown1 = document.getElementById('dropdown1');
@@ -181,6 +159,24 @@ function getFormValues() {
     };
 }
 
+let originalOnClick = startButton.onclick;
+
+import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
+//import { env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
+
+// Specify a custom location for models (defaults to '/models/').
+//env.localModelPath = 'models/';
+
+// Disable the loading of remote models from the Hugging Face Hub:
+// env.allowRemoteModels = false;
+// env.allowLocalModels = true;
+// env.useBrowserCache = false;
+
+myProgress.animate(0.7);
+myProgress.setText("70%");
+
+const generator = await pipeline('text-generation', 'onnx-community/Qwen2.5-0.5B-Instruct', { dtype: 'uint8' });
+
 // Check if SpeechRecognition is supported
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -192,7 +188,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
     startButton.onclick = () => {
         formValues = getFormValues();
-        console.log(formValues); // Display the values in the console
         recognition.lang = formValues.dropdown2;
         recognition.start();
         console.log('Speech recognition started');
@@ -225,13 +220,12 @@ Do not provide explanations, opinions, timestamps or any additional text beyond 
 Use polite forms in translation.
 Avoid usage of unpronounceable punctuation.`
         }
-        console.log(prompt);
         const messages = [
             { role: 'system', content: prompt },
             { role: 'user', content: text }
         ]
 
-        const output = await generator(messages, { max_new_tokens: 128 });
+        const output = await generator(messages, { max_new_tokens: 128, temperature: 0.1 });
         console.log("Result", output[0])
         const result = output[0].generated_text.at(-1).content
         processingImage.style.display = "none";
@@ -240,11 +234,10 @@ Avoid usage of unpronounceable punctuation.`
         speakText(result);
     };
 
-    recognition.onaudioend = () => {
+    recognition.onspeechend = () => {
         recognition.stop();
         console.log('Speech recognition stopped');
         originalOnClick = startButton.onclick;
-        //startButton.onclick = null; // Remove the onclick to avoid memory leaks 
         restoreButton();
         if (resultParagraph.textContent.trim() === '') {
             resultParagraph.style.display = "none";
@@ -275,3 +268,14 @@ function speakText(text) {
         console.log('Speech Synthesis is not supported in this browser.');
     }
 }
+
+myProgress.animate(1.0);
+myProgress.setText("100%");
+
+myProgress.destroy();
+document.getElementById("progress").remove();
+
+resultParagraph.style.display = "block";
+
+startButton.style.display = "block";
+createDOMElements();
