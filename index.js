@@ -201,7 +201,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         console.log(speechResult);
         resultParagraph.style.fontStyle = "italic";
         resultParagraph.textContent = speechResult;
-        // Define the prompt and list of messages
+/*         // Define the prompt and list of messages
         if (formValues.glossary != "") {
             prompt = `You are a translation machine. Your interface with users will be voice. 
 Your sole function is to translate the provided text from ${codeToLanguage[formValues.dropdown2]} to ${codeToLanguage[formValues.dropdown1]}.
@@ -234,7 +234,7 @@ Avoid usage of unpronounceable punctuation.`
         resultParagraph.style.display = "block";
         resultParagraph.style.fontStyle = "normal";
         resultParagraph.textContent = result;
-        speakText(result);
+        speakText(result); */
     };
 
     recognition.onspeechend = () => {
@@ -242,10 +242,10 @@ Avoid usage of unpronounceable punctuation.`
         console.log('Speech recognition stopped');
         originalOnClick = startButton.onclick;
         restoreButton();
-        if (resultParagraph.textContent.trim() === '' || window.getComputedStyle(resultParagraph).fontStyle === "italic") {
+/*         if (resultParagraph.textContent.trim() === '' || window.getComputedStyle(resultParagraph).fontStyle === "italic") {
             resultParagraph.style.display = "none";
             processingImage.style.display = "block";
-        }
+        } */
     };
 
     recognition.onerror = (event) => {
