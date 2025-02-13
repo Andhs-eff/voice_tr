@@ -7,6 +7,7 @@
     <title>Speech Recognition, Translation and Synthesis</title>
     <script src="progressbar.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="canonical" href="https://andhs-eff.github.io/voice_tr/" />
     <link rel="manifest" href="/voice_tr/manifest.json" />
     <!-- ios support -->
@@ -57,7 +58,7 @@
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", function () {
                 navigator.serviceWorker
-                    .register("/sw.js")
+                    .register("/voice_tr/sw.js")
                     .then(res => console.log("service worker registered"))
                     .catch(err => console.log("service worker not registered", err))
             })
