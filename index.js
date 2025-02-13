@@ -138,7 +138,7 @@ const init = () => {
 const startButton = document.getElementById('startButton');
 const processingImage = document.getElementById('processing');
 const resultParagraph = document.getElementById('result');
-const generator = await pipeline('text-generation', 'onnx-community/Qwen2.5-0.5B-Instruct-ONNX-MHA', { dtype: 'q4f16' });
+const generator = await pipeline('text-generation', 'onnx-community/Qwen2.5-0.5B-Instruct', { dtype: 'q4f16' });
 
 myProgress.animate(1.0);
 myProgress.setText("100%");
