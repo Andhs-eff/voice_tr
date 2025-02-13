@@ -1,3 +1,5 @@
+const startButton = document.getElementById('startButton');
+startButton.style.display = "none";
 class AudioVisualizer {
     constructor(audioContext, processFrame, processError) {
         this.audioContext = audioContext;
@@ -124,7 +126,6 @@ const init = () => {
     const a = new AudioVisualizer(audioContext, processFrame, processError);
 };
 
-const startButton = document.getElementById('startButton');
 const processingImage = document.getElementById('processing');
 const resultParagraph = document.getElementById('result');
 
@@ -135,7 +136,7 @@ const glossaryTextarea = document.getElementById('glossary');
 const codeToLanguage = {
     'ru-RU': 'Russian',
     'en-US': 'English',
-    'cmn-Hans-CN': 'Chinese'
+    'zh-CN': 'Chinese'
 }
 let formValues;
 let prompt;
@@ -261,7 +262,7 @@ function speakText(text) {
         const utterance = new SpeechSynthesisUtterance(text);
 
         // Configure the utterance
-        utterance.lang = 'en-US';
+        utterance.lang = formValues.dropdown1;
         utterance.rate = 1.0;
         synth.speak(utterance);
     } else {
