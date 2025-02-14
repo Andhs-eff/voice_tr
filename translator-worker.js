@@ -4,7 +4,7 @@ import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers
 let generator;
 
 async function initializeGenerator() {
-  generator = await pipeline('text-generation', 'onnx-community/Qwen2.5-0.5B-Instruct', { dtype: 'uint8' });
+  generator = await pipeline('text-generation', 'onnx-community/Qwen2.5-0.5B-Instruct', { dtype: 'q4' });
   // Notify the main thread that the generator is ready
   postMessage({ type: 'ready' });
 }

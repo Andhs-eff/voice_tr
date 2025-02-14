@@ -251,6 +251,7 @@ The text to translate is: ${speechResult}`
             { role: 'system', content: "You are a translation machine." },
             { role: 'user', content: prompt }
         ]
+        console.log(messages);
 
         // Instead of calling generator directly, post a message to the worker
         translatorWorker.postMessage({ messages, options: { max_new_tokens: 128, temperature: 0.1 } });
