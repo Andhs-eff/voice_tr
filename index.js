@@ -170,17 +170,29 @@ const translatorWorker = new Worker('translator-worker.js', { type: 'module' });
 
 // Listen for messages from the worker
 translatorWorker.onmessage = function (event) {
-    const { result, error } = event.data;
-    if (error) {
-        console.error('Translation error:', error);
-        return;
+    const data = event.data;
+    if (data.type === 'ready') {
+        // Generator is ready—remove the progress bar
+        myProgress.animate(1.0);
+        myProgress.setText("100%");
+        myProgress.destroy();
+        document.getElementById("progress").remove();
+        resultParagraph.style.display = "block";
+        startButton.style.display = "block";
+        createDOMElements();
+    } else if (data.type === 'result') {
+        // Process the translation result
+        processingImage.style.display = "none";
+        resultParagraph.style.display = "block";
+        resultParagraph.style.fontStyle = "normal";
+        resultParagraph.textContent = data.result;
+        speakText(data.result);
+        originalOnClick = startButton.onclick;
+        restoreButton();
+    } else if (data.type === 'error') {
+        console.error('Translation error:', data.error);
+        // Optionally do additional error handling here
     }
-    // Update UI with the result from the worker
-    processingImage.style.display = "none";
-    resultParagraph.style.display = "block";
-    resultParagraph.style.fontStyle = "normal";
-    resultParagraph.textContent = result;
-    speakText(result);
 };
 
 // Check if SpeechRecognition is supported
@@ -224,29 +236,30 @@ Use polite forms in translation.
 Avoid usage of unpronouncable punctuation.
 Do not provide explanations, opinions, timestamps or any additional text beyond the direct translation.
 Use polite forms in translation.
-Avoid usage of unpronounceable punctuation.`
+Avoid usage of unpronounceable punctuation.
+The text to translate is: ${speechResult}`
         } else {
             prompt = `You are a translation machine. Your interface with users will be voice. 
 Your sole function is to translate the provided text from ${codeToLanguage[formValues.dropdown2]} to ${codeToLanguage[formValues.dropdown1]}.
 Do not add, omit, or alter any information.
 Do not provide explanations, opinions, timestamps or any additional text beyond the direct translation.
 Use polite forms in translation.
-Avoid usage of unpronounceable punctuation.`
+Avoid usage of unpronounceable punctuation.
+The text to translate is: ${speechResult}`
         }
         const messages = [
-            { role: 'system', content: prompt },
-            { role: 'user', content: speechResult }
+            { role: 'system', content: "You are a translation machine." },
+            { role: 'user', content: prompt }
         ]
 
         // Instead of calling generator directly, post a message to the worker
         translatorWorker.postMessage({ messages, options: { max_new_tokens: 128, temperature: 0.1 } });
     };
 
-    recognition.onspeechend = () => {
+    recognition.onspeechend = async () => {
         recognition.stop();
         console.log('Speech recognition stopped');
-        originalOnClick = startButton.onclick;
-        restoreButton();
+        await new Promise(resolve => setTimeout(resolve, 3000));
         if (resultParagraph.textContent.trim() === '' || window.getComputedStyle(resultParagraph).fontStyle === "italic") {
             resultParagraph.style.display = "none";
             processingImage.style.display = "block";
@@ -255,9 +268,11 @@ Avoid usage of unpronounceable punctuation.`
 
     recognition.onerror = (event) => {
         console.log('Error occurred in recognition: ' + event.error);
+        originalOnClick = startButton.onclick;
         restoreButton();
     };
 } else {
+    originalOnClick = startButton.onclick;
     restoreButton();
     console.log('Speech Recognition is not supported in this browser.');
 }
@@ -277,13 +292,3 @@ function speakText(text) {
     }
 }
 
-myProgress.animate(1.0);
-myProgress.setText("100%");
-
-myProgress.destroy();
-document.getElementById("progress").remove();
-
-resultParagraph.style.display = "block";
-
-startButton.style.display = "block";
-createDOMElements();
