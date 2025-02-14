@@ -236,20 +236,18 @@ Use polite forms in translation.
 Avoid usage of unpronouncable punctuation.
 Do not provide explanations, opinions, timestamps or any additional text beyond the direct translation.
 Use polite forms in translation.
-Avoid usage of unpronounceable punctuation.
-The text to translate is: ${speechResult}`
+Avoid usage of unpronounceable punctuation.`
         } else {
             prompt = `You are a translation machine. Your interface with users will be voice. 
 Your sole function is to translate the provided text from ${codeToLanguage[formValues.dropdown2]} to ${codeToLanguage[formValues.dropdown1]}.
 Do not add, omit, or alter any information.
 Do not provide explanations, opinions, timestamps or any additional text beyond the direct translation.
 Use polite forms in translation.
-Avoid usage of unpronounceable punctuation.
-The text to translate is: ${speechResult}`
+Avoid usage of unpronounceable punctuation.`
         }
         const messages = [
-            { role: 'system', content: "You are a translation machine." },
-            { role: 'user', content: prompt }
+            { role: 'system', content: prompt },
+            { role: 'user', content: speechResult }
         ]
         console.log(messages);
 
