@@ -20,7 +20,7 @@ onmessage = async function(event) {
     }
     //const output = await generator(messages, options);
     //const result = output[0].generated_text.at(-1).content;
-    const output = await translator(messages[1].content);
+    const output = await generator(messages[1].content);
     const result = output[0].translation.text;
     postMessage({ type: 'result', result });
   } catch (err) {
