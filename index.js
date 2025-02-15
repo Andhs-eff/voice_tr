@@ -204,16 +204,16 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
-    startButton.onclick = () => {
+    startButton.addEventListener('click', () => {
         formValues = getFormValues();
         recognition.lang = formValues.dropdown2;
         recognition.start();
         console.log('Speech recognition started');
         resultParagraph.textContent = "";
         init();
-    };
+    });
 
-    recognition.onresult = async (event) => {
+    recognition.addEventListener('result', async (event) => {
         const speechResult = event.results[0][0].transcript;
         console.log(speechResult);
         processingImage.style.display = "none";
@@ -225,6 +225,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         await new Promise(resolve => setTimeout(resolve, 0));
 
         // Define the prompt and list of messages
+        let prompt;
         if (formValues.glossary != "") {
             prompt = `You are a translation machine. Your interface with users will be voice. 
 Your sole function is to translate the provided text from ${codeToLanguage[formValues.dropdown2]} to ${codeToLanguage[formValues.dropdown1]}.
@@ -233,43 +234,43 @@ Always take into account the terms provided in the glossary: ${formValues.glossa
 The terms of the glossary in ${codeToLanguage[formValues.dropdown2]} must be translated as specified in the glossary, irrespective of their meaning.
 Do not provide explanations, opinions, timestamps or any additional text beyond the direct translation.
 Use polite forms in translation.
-Avoid usage of unpronouncable punctuation.
-Do not provide explanations, opinions, timestamps or any additional text beyond the direct translation.
-Use polite forms in translation.
-Avoid usage of unpronounceable punctuation.`
+Avoid usage of unpronounceable punctuation.`;
         } else {
             prompt = `You are a translation machine. Your interface with users will be voice. 
 Your sole function is to translate the provided text from ${codeToLanguage[formValues.dropdown2]} to ${codeToLanguage[formValues.dropdown1]}.
 Do not add, omit, or alter any information.
 Do not provide explanations, opinions, timestamps or any additional text beyond the direct translation.
 Use polite forms in translation.
-Avoid usage of unpronounceable punctuation.`
+Avoid usage of unpronounceable punctuation.`;
         }
+
         const messages = [
             { role: 'system', content: prompt },
             { role: 'user', content: speechResult }
-        ]
+        ];
+
         console.log(messages);
 
         // Instead of calling generator directly, post a message to the worker
         translatorWorker.postMessage({ messages, options: { max_new_tokens: 128, temperature: 0.1 } });
-    };
+    });
 
-    recognition.onspeechend = async () => {
+    recognition.addEventListener('speechend', async () => {
         recognition.stop();
         console.log('Speech recognition stopped');
         await new Promise(resolve => setTimeout(resolve, 3000));
+
         if (resultParagraph.textContent.trim() === '' || window.getComputedStyle(resultParagraph).fontStyle === "italic") {
             resultParagraph.style.display = "none";
             processingImage.style.display = "block";
         }
-    };
+    });
 
-    recognition.onerror = (event) => {
+    recognition.addEventListener('error', (event) => {
         console.log('Error occurred in recognition: ' + event.error);
         originalOnClick = startButton.onclick;
         restoreButton();
-    };
+    });
 } else {
     originalOnClick = startButton.onclick;
     restoreButton();
