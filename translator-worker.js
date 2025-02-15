@@ -21,7 +21,7 @@ onmessage = async function(event) {
     //const output = await generator(messages, options);
     //const result = output[0].generated_text.at(-1).content;
     const output = await generator(messages[1].content);
-    const result = output[0].translation.text;
+    const result = output[0].translation_text;
     postMessage({ type: 'result', result });
   } catch (err) {
     postMessage({ type: 'error', error: err.message });
