@@ -4,7 +4,7 @@ import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers
 let generator;
 
 async function initializeGenerator() {
-  generator = await pipeline('text-generation', 'onnx-community/gemma-3-1b-it-ONNX', { dtype: 'q4f16' });
+  generator = await pipeline('text-generation', 'onnx-community/gemma-3-1b-it-ONNX', { dtype: 'int8' });
   // Notify the main thread that the generator is ready
   postMessage({ type: 'ready' });
 }
