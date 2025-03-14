@@ -1,5 +1,5 @@
 // translator-worker.js
-import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
+import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.4.0';
 
 let generator;
 
