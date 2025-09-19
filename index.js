@@ -204,14 +204,14 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
-    startButton.addEventListener('click', () => {
+    startButton.onclick = () => {
         formValues = getFormValues();
         recognition.lang = formValues.dropdown2;
         recognition.start();
         console.log('Speech recognition started');
         resultParagraph.textContent = "";
         init();
-    });
+    };
 
     recognition.addEventListener('result', async (event) => {
         const speechResult = event.results[0][0].transcript;
@@ -291,4 +291,3 @@ function speakText(text) {
         console.log('Speech Synthesis is not supported in this browser.');
     }
 }
-
