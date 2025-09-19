@@ -212,8 +212,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         resultParagraph.textContent = "";
         init();
     };
-
-    recognition.addEventListener('result', async (event) => {
+    recognition.onresult = async (event) => {
         const speechResult = event.results[0][0].transcript;
         console.log(speechResult);
         processingImage.style.display = "none";
@@ -253,9 +252,8 @@ Avoid usage of unpronounceable punctuation.`;
 
         // Instead of calling generator directly, post a message to the worker
         translatorWorker.postMessage({ messages, options: { max_new_tokens: 128, temperature: 0.1 } });
-    });
-
-    recognition.addEventListener('speechend', async () => {
+    };
+    recognition.onspeechend = async () => {
         recognition.stop();
         console.log('Speech recognition stopped');
         await new Promise(resolve => setTimeout(resolve, 3000));
@@ -264,13 +262,12 @@ Avoid usage of unpronounceable punctuation.`;
             resultParagraph.style.display = "none";
             processingImage.style.display = "block";
         }
-    });
-
-    recognition.addEventListener('error', (event) => {
+    };
+    recognition.onerror = (event) => {
         console.log('Error occurred in recognition: ' + event.error);
         originalOnClick = startButton.onclick;
         restoreButton();
-    });
+    };
 } else {
     originalOnClick = startButton.onclick;
     restoreButton();
